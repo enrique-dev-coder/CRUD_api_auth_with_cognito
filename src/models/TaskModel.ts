@@ -1,10 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Types } from 'mongoose';
 
 const taskSchema = new mongoose.Schema({
   task: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+  user: {
+    type: Types.ObjectId,
+    ref: 'User', // Referencia al modelo User
+    required: true,
+  },
+});
 
-export const TaskModel = mongoose.model('Task', taskSchema)
+export const TaskModel = mongoose.model('Task', taskSchema);

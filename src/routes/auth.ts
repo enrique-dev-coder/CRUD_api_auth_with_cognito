@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
+import { User } from '../models/UserModel';
 import {
   SignUpCommand,
   CognitoIdentityProviderClient,
@@ -10,6 +10,7 @@ import {
 // read env vars
 import { config } from 'dotenv';
 config();
+
 // Cognito
 
 // user pool params obtained from AWS console
@@ -44,19 +45,28 @@ authRouter.post('/createuser', async (req: Request, res: Response) => {
 authRouter.post('/confirmation', async (req: Request, res: Response) => {
   const { email, code } = req.body;
 
-  const command = new ConfirmSignUpCommand({
-    ClientId: poolData.ClientId, // required
-    Username: email, // required
-    ConfirmationCode: code, // required
-  });
+  try {
+    // Confirmar el registro del usuario en Cognito
+    const command = new ConfirmSignUpCommand({
+      ClientId: poolData.ClientId,
+      Username: email,
+      ConfirmationCode: code,
+    });
+    // enviar confirmacion
+    await client.send(command);
 
-  const userConfirmation = await client
-    .send(command)
-    .then((response) => res.status(200).json(response))
-    .catch((error) => res.status(500).json(`You had an error : ${error}`));
-  // TODO : agregar funcion para que caundo se confirme se cree el usuaio en base de datos
-  
-  return userConfirmation;
+    // Crear usuario en base de datos
+    const newUser = new User({ email });
+    await newUser.save();
+
+    res.status(200).json({
+      message: `User confirmed and created in the database:${newUser}`,
+    });
+  } catch (error) {
+    // Manejar errores
+    console.error('Error confirming user:', error);
+    res.status(500).json({ error: 'Error confirming user.' });
+  }
 });
 
 authRouter.post('/login', async (req: Request, res: Response) => {
