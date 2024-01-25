@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Express, Request, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
-import router from "./routes/task.js";
+import router from "./routes/task";
 
-const app = express();
+const app: Express = express();
 
 // allow cors
 app.use(cors());
@@ -15,7 +15,7 @@ app.use(helmet());
 //routes
 app.use('/api', router)
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.json("hola desde el server");
 });
 
