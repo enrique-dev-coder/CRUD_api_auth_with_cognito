@@ -49,7 +49,6 @@ exports.createTask = createTask;
 const updateTask = (req, res) => {
     const { id } = req.params;
     const { task, done } = req.body;
-    console.log(task);
     TaskModel_js_1.TaskModel.findByIdAndUpdate(id, { task, done })
         .then(() => res.status(200).send('Updated successfully'))
         .catch((err) => {
