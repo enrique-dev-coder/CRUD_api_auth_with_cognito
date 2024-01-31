@@ -30,7 +30,7 @@ const getTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getTasksByUserId = getTasksByUserId;
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { task, email } = req.body;
-    // Verificar si el usuario xiste
+    // Verificar si el usuario existe
     const user = yield UserModel_js_1.User.findOne({ email });
     if (!user) {
         return res.status(404).json({ error: 'User not found.' });
@@ -48,9 +48,10 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createTask = createTask;
 const updateTask = (req, res) => {
     const { id } = req.params;
-    const { task } = req.body;
-    TaskModel_js_1.TaskModel.findByIdAndUpdate(id, { task })
-        .then(() => res.send('Updated successfully'))
+    const { task, done } = req.body;
+    console.log(task);
+    TaskModel_js_1.TaskModel.findByIdAndUpdate(id, { task, done })
+        .then(() => res.status(200).send('Updated successfully'))
         .catch((err) => {
         console.log('Something went wrong');
         res.send(err);

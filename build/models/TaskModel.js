@@ -30,6 +30,10 @@ const taskSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
+    done: {
+        type: Boolean,
+        default: false,
+    },
     user: {
         type: mongoose_1.Types.ObjectId,
         ref: 'User', // Referencia al modelo User
